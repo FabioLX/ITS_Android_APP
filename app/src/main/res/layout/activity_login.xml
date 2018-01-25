@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="app.its.itfabiorossi.its_androidapp.LoginActivity">
+
+
+
+    <EditText
+        android:id="@+id/login"
+        android:layout_below="@+id/et01"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red"
+        android:hint="nome"/>
+    <EditText
+        android:id="@+id/password"
+        android:layout_below="@+id/login"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:inputType="textPassword"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:textColor="@color/red"
+        android:hint="password"/>
+    <Button
+        android:id="@+id/button_login"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/password"
+        android:layout_centerHorizontal="true"
+        android:text="@string/push3"
+        android:textAllCaps="true"
+        android:layout_width="200dp"
+        android:layout_height="100dp" />
+
+    <TextView
+        android:id="@+id/error"
+        android:layout_below="@+id/button_login"
+        android:layout_width="match_parent"
+        android:textColor="@color/red"
+        android:textSize="30sp"
+        android:text="ERRORE PASSWORD"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="app.its.itfabiorossi.its_androidapp.ProvaActivity">
+
+
+    <TextView
+        android:id="@+id/prova_text_01"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="30sp"
+        android:text="test"
+        android:layout_height="100dp" />
+    <Button
+        android:id="@+id/buttonprova"
+        android:text="RESULT T BACK"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp" />
+    <EditText
+        android:id="@+id/ed02"
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/buttonprova"
+        android:layout_height="100dp" />
+    <FrameLayout
+        android:id="@+id/fragment_prova"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/ed02"
+        android:layout_height="match_parent"></FrameLayout>
+
+</RelativeLayout>
