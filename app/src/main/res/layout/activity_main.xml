@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context="app.its.itfabiorossi.its_androidapp.MainActivity">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/text01"
@@ -18,8 +21,10 @@
         android:id="@+id/id_prova"
         android:layout_below="@+id/text01"
         android:layout_width="100dp"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:textColor="@color/colorPrimary"
+        android:textSize="25sp"
         android:text="prova"/>
 
     <TextView
@@ -41,10 +46,10 @@
         android:id="@+id/et01"
         android:layout_below="@+id/button_action"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
+        android:focusable="false"
         android:gravity="center"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:textColor="@color/red"
         android:text="enter data"/>
 
@@ -57,12 +62,13 @@
         android:text="@string/push"
         android:textAllCaps="true"
         android:layout_width="200dp"
-        android:layout_height="100dp" />
+        android:layout_height="40dp" />
 
     <EditText
         android:id="@+id/login"
         android:layout_below="@+id/et01"
         android:layout_centerHorizontal="true"
+        android:focusable="false"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:gravity="center"
@@ -77,6 +83,7 @@
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:inputType="textPassword"
+        android:focusable="false"
         android:visibility="gone"
         android:gravity="center"
         android:layout_height="wrap_content"
@@ -85,15 +92,85 @@
     <Button
         android:id="@+id/button_login"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
         android:layout_below="@+id/password"
         android:layout_centerHorizontal="true"
         android:text="@string/push3"
         android:textAllCaps="true"
         android:layout_width="200dp"
-        android:layout_height="100dp" />
+        android:layout_height="40dp" />
 
+    <!--region shared preferencer-->
+    <EditText
+        android:id="@+id/et_shared"
+        android:layout_below="@+id/button_login"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:focusable="false"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:layout_height="40dp"
+        android:textColor="@color/red"
+        android:hint="share DATA! here"/>
+    <Button
+        android:id="@+id/button_save_shared"
+        android:layout_gravity="center"
+        android:layout_below="@+id/et_shared"
+        android:layout_centerHorizontal="true"
+        android:text="save in shared"
+        android:textAllCaps="true"
+        android:layout_width="200dp"
+        android:layout_height="50dp" />
 
+       <Button
+    android:id="@+id/button_read_shared"
+    android:layout_gravity="center"
+    android:layout_below="@+id/button_save_shared"
+    android:layout_centerHorizontal="true"
+    android:text="READ shared"
+    android:textAllCaps="true"
+    android:layout_width="200dp"
+    android:layout_height="50dp" />
 
+    <Button
+        android:id="@+id/button_save_internal"
+        android:layout_gravity="center"
+        android:layout_below="@+id/button_read_shared"
+        android:layout_centerHorizontal="true"
+        android:text="SAVE internal"
+        android:textAllCaps="true"
+        android:layout_width="200dp"
+        android:layout_height="50dp" />
+    <Button
+        android:id="@+id/button_read_internal"
+        android:layout_gravity="center"
+        android:layout_below="@+id/button_save_internal"
+        android:layout_centerHorizontal="true"
+        android:text="READ internal"
+        android:textAllCaps="true"
+        android:layout_width="200dp"
+        android:layout_height="50dp" />
 
+    <Button
+        android:id="@+id/button_save_sql"
+        android:layout_gravity="center"
+        android:layout_below="@+id/button_read_internal"
+        android:layout_centerHorizontal="true"
+        android:text="SAVE sql"
+        android:textAllCaps="true"
+        android:layout_width="200dp"
+        android:layout_height="50dp" />
+    <Button
+        android:id="@+id/button_read_sql"
+        android:layout_gravity="center"
+        android:layout_below="@+id/button_save_sql"
+        android:layout_centerHorizontal="true"
+        android:text="READ sql"
+        android:textAllCaps="true"
+        android:layout_width="200dp"
+        android:layout_height="50dp" />
+
+<!--endregion-->
 </RelativeLayout>
+
+
+</ScrollView>

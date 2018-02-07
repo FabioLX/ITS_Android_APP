@@ -7,6 +7,10 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -15,14 +19,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.GenericSignatureFormatError;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -31,7 +39,10 @@ import javax.net.ssl.HttpsURLConnection;
 
 import Models.LocationModel;
 import app.its.itfabiorossi.its_androidapp.Interfaces.DownloadCallBack;
+import app.its.itfabiorossi.its_androidapp.adapters.ForecastAdapter;
 import app.its.itfabiorossi.its_androidapp.adapters.LocalAdapter;
+import app.its.itfabiorossi.its_androidapp.models.ForecastModel;
+import app.its.itfabiorossi.its_androidapp.models.domain.Forecasts;
 
 public class ListActivity extends AppCompatActivity  implements DownloadCallBack.DownloadCallback {
 
@@ -44,7 +55,10 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
     private Button mButton;
     private JSONObject jObj ;
     private ProgressDialog mProgressDialog;
-
+    private ArrayList<LocationModel> mListModel;
+    private ArrayList<ForecastModel> mForecastModel;
+    private RecyclerView mRecycleView; // serve compile del manifest: implementation 'com.android.support:recyclerview-v7:+'
+    private ForecastAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +67,23 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
         mEnterData=(EditText) findViewById(R.id._enter_data);
         mProgressStatus=(TextView) findViewById(R.id._txt_progress);
         mButton=(Button) findViewById(R.id._btn_http);
+
+        //PASSO 12
+        mRecycleView=(RecyclerView) findViewById(R.id.recycle_view_1);
+        this.adapter= new ForecastAdapter();
+        //la recycle view vuole un linear layout manager!!!
+        RecyclerView.LayoutManager layoutManager= new LinearLayoutManager(getApplicationContext());
+        mRecycleView.setLayoutManager(layoutManager);
+        mRecycleView.setItemAnimator(new DefaultItemAnimator());
+
+        mRecycleView.setAdapter(this.adapter);
+
+
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-
-
-                //lanci ala connection
+                //lancia la connection
                 startDownload();
 
             }
@@ -77,11 +101,11 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
 
 
         //custom adapter
-        ArrayList<LocationModel> listModel= new ArrayList<>();
-        listModel.add( new LocationModel("1", "citta1"));
-        listModel.add( new LocationModel("2", "citta2"));
+        mListModel= new ArrayList<>();
+        mListModel.add( new LocationModel("1", "citta1"));
+        mListModel.add( new LocationModel("2", "citta2"));
 
-        LocalAdapter adapter= new LocalAdapter(this, listModel);
+        LocalAdapter adapter= new LocalAdapter(this, mListModel);
         mListView.setAdapter(adapter);
 
 
@@ -114,7 +138,10 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
 //         mProgressStatus.setText("Status: "+ DownloadCallBack.DownloadCallback.Progress.CONNECT_SUCCESS);
             int responseCode = connection.getResponseCode(); //sincrono MA DA ESEGUIRE IN ASYNKTASK
             if (responseCode != HttpsURLConnection.HTTP_OK) {
+                Log.d("LX", "error1"+ responseCode);
                 throw new IOException("HTTP error code: " + responseCode);
+
+
             }
             // Retrieve the response body as an InputStream.
             stream = connection.getInputStream(); // se risposta OK prelevo la stringa
@@ -162,6 +189,7 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
 
         mDownloading = false;
         //TODO  STAMPA LISTA
+        Log.d("LX", "gnocca FINISH download");
 
         JSONObject jObj = new JSONObject();//data
 
@@ -177,19 +205,30 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
      */
     public String readStream(InputStream stream, int maxReadSize)
             throws IOException, UnsupportedEncodingException {
-        Reader reader = null;
-        reader = new InputStreamReader(stream, "UTF-8");
-        char[] rawBuffer = new char[maxReadSize];
-        int readSize;
-        StringBuffer buffer = new StringBuffer();
-        while (((readSize = reader.read(rawBuffer)) != -1) && maxReadSize > 0) {
-            if (readSize > maxReadSize) {
-                readSize = maxReadSize;
-            }
-            buffer.append(rawBuffer, 0, readSize);
-            maxReadSize -= readSize;
+
+        BufferedReader r= new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+        StringBuffer total = new StringBuffer();
+        String line;
+        while ((line = r.readLine()) != null){
+            total.append(line).append('\n');
         }
-        return buffer.toString();
+        return total.toString();
+
+
+//        Reader reader = null;
+//        reader = new InputStreamReader(stream, "UTF-8");
+//        char[] rawBuffer = new char[maxReadSize];
+//        int readSize;
+//        StringBuffer buffer = new StringBuffer();
+//        while (((readSize = reader.read(rawBuffer)) != -1) && maxReadSize > 0) {
+//            if (readSize > maxReadSize) {
+//                readSize = maxReadSize;
+//            }
+//            buffer.append(rawBuffer, 0, readSize);
+//            maxReadSize -= readSize;
+//        }
+//        return buffer.toString();
+
     }
     //endregion
 
@@ -197,6 +236,24 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
 
     @Override
     public void updateFromDownload(Object result) {
+        //stampa del risultato RESPONSE
+        //richiamato al termine dell'exec del service
+
+        //cast della result
+        Forecasts forecasts= (Forecasts)result;
+        //TODO
+        this.adapter.setForecasts(forecasts.getList());
+        this.adapter.notifyDataSetChanged();
+
+
+       // String data=forecasts.getList().get(6).getWind().getSpeed().toString();
+
+
+
+        Log.d("LX", "city "+forecasts.getCity().getName().toString());
+
+
+
 
     }
 
@@ -211,6 +268,7 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
     @Override
     public void onProgressUpdate(int progressCode, int percentComplete) {
 
+
         switch(progressCode) {
             // You can add UI behavior for progress updates here.
             case Progress.ERROR:
@@ -220,20 +278,24 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
                 break;
             case Progress.CONNECT_SUCCESS:
                 //TODO
+
                 mProgressStatus.setText(progressCode);
                 break;
             case Progress.GET_INPUT_STREAM_SUCCESS:
                 //TODO
+
                 mProgressStatus.setText(progressCode);
                 break;
             case Progress.PROCESS_INPUT_STREAM_IN_PROGRESS:
                 //TODO
+
                 mProgressStatus.setText(progressCode);
                 mProgressDialog=ProgressDialog.show(ListActivity.this, "Progress","Status", true);
 
                 break;
             case Progress.PROCESS_INPUT_STREAM_SUCCESS:
                 //TODO
+
                 mProgressStatus.setText(progressCode);
                 mProgressDialog=ProgressDialog.show(ListActivity.this, "Progress","Status", true);
 
@@ -252,9 +314,11 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
      */
     private class DownloadTask extends AsyncTask<String, Integer, DownloadTask.Result> {
 
-        private DownloadCallBack.DownloadCallback<String> mCallback;
+        private DownloadCallBack.DownloadCallback<Forecasts> mCallback;
+        //private DownloadCallBack.DownloadCallback<String> mCallback;
 
-        public DownloadTask(DownloadCallBack.DownloadCallback<String> callback) {
+
+        public DownloadTask(DownloadCallBack.DownloadCallback<Forecasts> callback) {
             setCallback(callback);
         }
 
@@ -262,7 +326,7 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
 //
 //        }
 
-        void setCallback(DownloadCallBack.DownloadCallback<String> callback) {
+        void setCallback(DownloadCallBack.DownloadCallback<Forecasts> callback) {
             mCallback = callback;
         }
 
@@ -273,8 +337,13 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
          */
         class Result {
             public String mResultValue;
+            public Forecasts mForecast;
             public Exception mException;
             public Result(String resultValue) {
+                //parse stringa di result in GSON
+                Gson gson= new Gson();
+                mForecast= gson.fromJson(resultValue, Forecasts.class);
+
                 mResultValue = resultValue;
             }
             public Result(Exception exception) {
@@ -305,15 +374,17 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
         @Override
         protected DownloadTask.Result doInBackground(String... urls) { // da < 0 a n > variabili String !!!
 
-            //connesso
+            //connesso NOTIFICARE LA PROGRESS
 
             Result result = null;
             if (!isCancelled() && urls != null && urls.length > 0) {
 //                String urlString = urls[0];
                 try {
                     //TODO creare stringa
+                    Log.d("LX", "CAZZZI!!!! MAZZIII");
+                    String query= "?q=Cesena&mode=JSON&APPID=";
 //                    String urlString = new String("api.openweathermap.org/data/2.5/weather?id=2172797"+ URLEncoder.encode(urls[0], "UTF-8")+"&APPID="+APPID);
-                    String urlString= new String( urls[0]+"&APPID="+APPID);
+                    String urlString= new String( urls[0]+query+APPID);//&APPID
                     URL url = new URL(urlString);
                     String resultString = downloadUrl(url);
                     if (resultString != null) {
@@ -325,6 +396,7 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
                     result = new Result(e);
                 }
             }
+
             return result;
         }
 
@@ -335,13 +407,18 @@ public class ListActivity extends AppCompatActivity  implements DownloadCallBack
         protected void onPostExecute(Result result) {
             if (result != null && mCallback != null) {
                 if (result.mException != null) {
-                    mCallback.updateFromDownload(result.mException.getMessage());
+                    //Log.d("LX", "RISULTATOZZZZ: "+result.mException.getMessage());
+                    mCallback.updateFromDownload(null);
                 } else if (result.mResultValue != null) {
-                    mCallback.updateFromDownload(result.mResultValue);
+                    mCallback.updateFromDownload(result.mForecast);
+                   // Log.d("LX", "RISULTATOZZZZ: "+result.mResultValue);
+                    Log.d("LX", "RISULTATOZZZZ GSON: "+result.mForecast.toString());
+
                 }
                 mCallback.finishDownloading();
             }
             else{
+                Log.d("LX", "RISULTATOZZZZ: error ");
                 Toast.makeText(getApplicationContext(), "error connection" , Toast.LENGTH_LONG).show();
 
             }

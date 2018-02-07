@@ -18,6 +18,12 @@
         android:layout_width="match_parent"
         android:text="http connection"
         android:layout_height="60dp" />
+
+    <Button
+        android:id="@+id/_lista"
+        android:layout_width="match_parent"
+        android:text="stampa lista"
+        android:layout_height="60dp" />
     <TextView
         android:id="@+id/_txt_progress"
         android:layout_width="match_parent"
@@ -25,11 +31,22 @@
         android:gravity="center"
         android:layout_height="20dp" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycle_view_1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        >
+
+
+    </android.support.v7.widget.RecyclerView>
+
     <ListView
         android:id="@+id/list_view"
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         >
 
     </ListView>
