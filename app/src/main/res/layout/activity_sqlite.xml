@@ -50,5 +50,12 @@
         android:text="READ sql"
         android:textAllCaps="true" />
 
+    <ListView
+        android:id="@+id/list_sql"
+        android:layout_below="@id/button_read_sql"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </ListView>
 
 </RelativeLayout>

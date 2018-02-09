@@ -6,6 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
+
+import app.its.itfabiorossi.its_androidapp.models.TrainingCourseModel;
+
 /**
  * Created by FABIO.ROSSI on 07/02/2018.
  */
@@ -33,6 +37,7 @@ public class TrainingCourseDbManager {
         values.put(TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_END, end);
 
         long l= db.insert(TrainingCourseContract.TrainingCourseEntry.TABLE_NAME, null, values);
+        //se inserisco tabella (TABLE_NAME) inesistente NON va in eccezione MA torna valore -1, FARE CONTROLLI!
 
         Log.d("LX", "database insert: "+l);
 
@@ -48,7 +53,7 @@ public class TrainingCourseDbManager {
         Log.d("LX", "delete OK: "+l);
     }
 
-    public void readRecord(){
+    public ArrayList<TrainingCourseModel> readRecord(){
 
         SQLiteDatabase db = mHelper.getWritableDatabase();
 
@@ -65,6 +70,8 @@ public class TrainingCourseDbManager {
         //sort
         String sort=  TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_START + " DESC";
 
+        ArrayList<TrainingCourseModel> courseModels= new ArrayList<>();
+
         Cursor cursor= db.query(
                 TrainingCourseContract.TrainingCourseEntry.TABLE_NAME,
                 select,
@@ -77,14 +84,25 @@ public class TrainingCourseDbManager {
 
         while (cursor.moveToNext()){
 
-            int trainingCourseID= cursor.getInt(cursor.getColumnIndex(TrainingCourseContract.TrainingCourseEntry._ID)); //vuole l'indice della colonna
+            int trainingCourseID= cursor.getInt(cursor.getColumnIndex(TrainingCourseContract.TrainingCourseEntry._ID)); //vuole l'indice della colonna potrei anche passare un get(i di ciclo)
             String descr= cursor.getString(cursor.getColumnIndex(TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_DESCRIPTION));
             String start= cursor.getString(cursor.getColumnIndex(TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_START));
             String end= cursor.getString(cursor.getColumnIndex(TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_END));
 
+            //popolare lista di models
+            TrainingCourseModel tcm= new TrainingCourseModel();
+            tcm.setDescription(descr);
+            tcm.setStart(start);
+            tcm.setEnd(end);
+            tcm.setId(trainingCourseID);
+            courseModels.add(tcm);
+
             Log.d("LX", "ID: "+trainingCourseID+" start "+start+" end "+ end+" descr "+ descr);
 
         }
+        cursor.close();
+
+        return courseModels;
 
     }
 

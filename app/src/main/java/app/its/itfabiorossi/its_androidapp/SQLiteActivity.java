@@ -4,11 +4,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import app.its.itfabiorossi.its_androidapp.Database.TrainingCourseDbManager;
+import app.its.itfabiorossi.its_androidapp.adapters.TrainingCourseArrayAdapter;
+import app.its.itfabiorossi.its_androidapp.models.TrainingCourseModel;
 
 public class SQLiteActivity extends AppCompatActivity {
 
@@ -18,7 +25,9 @@ public class SQLiteActivity extends AppCompatActivity {
     private EditText mEndEdit;
     private EditText mDescrEdit;
     private TrainingCourseDbManager dbManager;
-
+    private ListView mListViewCourses;
+    private TrainingCourseArrayAdapter mAdapter;
+    private ArrayList <TrainingCourseModel> mListCourses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +41,13 @@ public class SQLiteActivity extends AppCompatActivity {
         mStartEdit = (EditText) findViewById(R.id.editstart);
         mEndEdit = (EditText) findViewById(R.id.editend);
         mDescrEdit = (EditText) findViewById(R.id.editdescr);
+        mListViewCourses=(ListView) findViewById(R.id.list_sql);
 
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-
-                //TODO controllo stringa vuota
-
+                //controllo stringa vuota
                 String desc = mDescrEdit.getText().toString();
                 String start = mStartEdit.getText().toString();
                 String end = mEndEdit.getText().toString();
@@ -51,13 +59,28 @@ public class SQLiteActivity extends AppCompatActivity {
 
                     //inserimento a DB
                     dbManager.insertRecord(mDescrEdit.getText().toString(), mStartEdit.getText().toString(), mEndEdit.getText().toString());
-
-
                 }
-
-
             }
         });
+
+        mReadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               mListCourses = dbManager.readRecord();
+
+
+                //list adapter
+               mAdapter= new TrainingCourseArrayAdapter(SQLiteActivity.this, mListCourses); //(getApplicationContext(), mListCourses); stessa cosa
+
+                //stampa lista
+                mListViewCourses.setAdapter(mAdapter);
+
+            }
+
+        });
+
+
+
 
     }
 }
