@@ -24,8 +24,15 @@ import app.its.itfabiorossi.its_androidapp.models.TrainingCourseModel;
 
 public class TrainingCourseArrayAdapter extends ArrayAdapter<TrainingCourseModel> {
 
+    //creazione listener
+    public interface TrainingListener{
+        void  eliminaRecord(int id);
+
+    }
+
     private Context context;
     private ArrayList<TrainingCourseModel> values;
+    private TrainingListener listener;
 
     public TrainingCourseArrayAdapter(Context context, ArrayList<TrainingCourseModel> values) {
         super(context, R.layout.row_training_course, values);
@@ -33,6 +40,9 @@ public class TrainingCourseArrayAdapter extends ArrayAdapter<TrainingCourseModel
         this.values = values;
     }
 
+    public void setlistener(TrainingListener l){
+        listener=l;
+    }
 
     @NonNull
     @Override
@@ -58,12 +68,18 @@ public class TrainingCourseArrayAdapter extends ArrayAdapter<TrainingCourseModel
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+              /*
                 //not BEST PRACTICE cancellazione da fare fuori adapter! VA FATTO SULL?ACTIVITY
                 // adapter notifica l'activity che e' stata chiamata la delete, l'activity cancella, activity notify il change!
 
                 int idrecord= model.getId();
                 TrainingCourseDbManager tcm = new TrainingCourseDbManager(getContext());
                 tcm.deleteRecord(idrecord);
+                */
+
+              //creo listener per notificare l'activity
+
+              listener.eliminaRecord(model.getId());
 
             }
         });
