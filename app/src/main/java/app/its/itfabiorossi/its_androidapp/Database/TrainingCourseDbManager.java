@@ -27,7 +27,7 @@ public class TrainingCourseDbManager {
 
         SQLiteDatabase db = mHelper.getWritableDatabase();
 
-        ContentValues values= new ContentValues();
+        ContentValues values= new ContentValues(); //creazione oggetto content values, ID cre
         values.put(TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_DESCRIPTION, description);
         values.put(TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_START, start);
         values.put(TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_END, end);
@@ -41,7 +41,7 @@ public class TrainingCourseDbManager {
 
     public void deleteRecord(int id){
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        String where = TrainingCourseContract.TrainingCourseEntry._ID+" = ?";
+        String where = TrainingCourseContract.TrainingCourseEntry._ID + " = ?";
         String[] values= {Integer.toString(id)}; //array di string!!!
         int l=db.delete(TrainingCourseContract.TrainingCourseEntry.TABLE_NAME,where, values); //array di string
 
@@ -59,10 +59,11 @@ public class TrainingCourseDbManager {
                 TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_END
         };
 
-        String where= " * ";
+        String where= null;//" * ";
         String[] whereArgs= null;
 
-        String sort=  TrainingCourseContract.TrainingCourseEntry._ID + " DESC";
+        //sort
+        String sort=  TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_START + " DESC";
 
         Cursor cursor= db.query(
                 TrainingCourseContract.TrainingCourseEntry.TABLE_NAME,
@@ -74,6 +75,16 @@ public class TrainingCourseDbManager {
                 sort
                 );
 
+        while (cursor.moveToNext()){
+
+            int trainingCourseID= cursor.getInt(cursor.getColumnIndex(TrainingCourseContract.TrainingCourseEntry._ID)); //vuole l'indice della colonna
+            String descr= cursor.getString(cursor.getColumnIndex(TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_DESCRIPTION));
+            String start= cursor.getString(cursor.getColumnIndex(TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_START));
+            String end= cursor.getString(cursor.getColumnIndex(TrainingCourseContract.TrainingCourseEntry.COLUMN_NAME_END));
+
+            Log.d("LX", "ID: "+trainingCourseID+" start "+start+" end "+ end+" descr "+ descr);
+
+        }
 
     }
 

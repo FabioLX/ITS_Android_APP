@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="app.its.itfabiorossi.its_androidapp.SQLiteActivity">
+
+    <EditText
+        android:id="@+id/editstart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:hint="start time" />
+
+    <EditText
+        android:id="@+id/editend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editstart"
+        android:gravity="center"
+        android:hint="end time" />
+
+    <EditText
+        android:id="@+id/editdescr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editend"
+        android:gravity="center"
+        android:hint="description time" />
+
+    <Button
+        android:id="@+id/button_save_sql"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/editdescr"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="SAVE sql"
+        android:textAllCaps="true" />
+
+    <Button
+        android:id="@+id/button_read_sql"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/button_save_sql"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:text="READ sql"
+        android:textAllCaps="true" />
+
+
+</RelativeLayout>
