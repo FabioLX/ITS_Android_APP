@@ -32,11 +32,6 @@
             <!-- </intent-filter> -->
 
         </activity>
-        <activity
-            android:name=".BadActivity"
-            android:label="@string/title_activity_sql"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
         <activity android:name=".SQLiteActivity"
             android:label="SQLite!!!!">
             <intent-filter>
